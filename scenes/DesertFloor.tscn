@@ -1,0 +1,105 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://art/tex/Ground033_2K-JPG/Ground033_2K_NormalDX.jpg" type="Texture" id=1]
+[ext_resource path="res://art/tex/Ground031_2K-JPG/Ground031_2K_Roughness.jpg" type="Texture" id=2]
+[ext_resource path="res://art/tex/Ground031_2K-JPG/Ground031_2K_Color.jpg" type="Texture" id=3]
+[ext_resource path="res://art/tex/Ground031_2K-JPG/Ground031_2K_NormalDX.jpg" type="Texture" id=4]
+[ext_resource path="res://art/tex/Ground033_2K-JPG/Ground033_2K_Color.jpg" type="Texture" id=5]
+[ext_resource path="res://art/tex/Ground033_2K-JPG/Ground033_2K_Roughness.jpg" type="Texture" id=6]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type spatial;
+
+uniform sampler2D noise_tex;
+uniform float cut_factor;
+uniform float border;
+uniform float height;
+
+uniform float size_1;
+uniform sampler2D albedo_1;
+uniform sampler2D normalmap_1;
+uniform sampler2D roughness_1;
+
+uniform float size_2;
+uniform sampler2D albedo_2;
+uniform sampler2D normalmap_2;
+uniform sampler2D roughness_2;
+
+uniform vec4 albedo_3 : hint_color;
+uniform vec4 albedo_4 : hint_color;
+
+uniform float roughness : hint_range(0.0, 10.0, 0.1);
+
+void fragment() {
+	vec2 uv_1 = UV * size_1;
+	vec2 uv_2 = UV * size_2;
+	
+	float noise = texture(noise_tex,  UV).r;
+	noise = smoothstep(cut_factor, cut_factor + border, noise);
+	
+	vec3 stone = mix(texture(albedo_1, uv_1).rgb, albedo_4.rgb, 1);
+	vec3 sand = mix(texture(albedo_2, uv_2).rgb, albedo_3.rgb, 1);
+	
+	vec3 albedo = mix(stone, sand, noise);
+	vec3 normalmap = mix(texture(normalmap_1, uv_1).rgb, texture(normalmap_2, uv_2).rgb, noise);
+	vec3 roughnessvalue = mix(texture(roughness_1, uv_1).rgb, texture(roughness_2, uv_2).rgb, noise);
+	
+	ALBEDO = vec3(albedo);
+	NORMALMAP = normalmap;
+	ROUGHNESS = roughnessvalue.r * roughness;
+}
+
+void vertex() {
+	float noise = texture(noise_tex,  UV).r;
+	noise = smoothstep(cut_factor, cut_factor + border, noise) * noise * noise * noise * noise;
+	VERTEX.y += noise * height;
+}"
+
+[sub_resource type="OpenSimplexNoise" id=2]
+period = 27.2
+persistence = 0.633
+lacunarity = 2.88
+
+[sub_resource type="NoiseTexture" id=3]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource( 2 )
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 1 )
+shader_param/cut_factor = 0.469
+shader_param/border = 0.074
+shader_param/height = 0.925
+shader_param/size_1 = 6.0
+shader_param/size_2 = 6.0
+shader_param/albedo_3 = Color( 1, 0.392157, 0.027451, 1 )
+shader_param/albedo_4 = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
+shader_param/roughness = 1.8
+shader_param/noise_tex = SubResource( 3 )
+shader_param/albedo_1 = ExtResource( 3 )
+shader_param/normalmap_1 = ExtResource( 4 )
+shader_param/roughness_1 = ExtResource( 2 )
+shader_param/albedo_2 = ExtResource( 5 )
+shader_param/normalmap_2 = ExtResource( 1 )
+shader_param/roughness_2 = ExtResource( 6 )
+
+[sub_resource type="PlaneMesh" id=5]
+material = SubResource( 4 )
+size = Vector2( 50, 50 )
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 25, 2, 25 )
+
+[node name="DesertFloor" type="Spatial"]
+
+[node name="Terrain" type="MeshInstance" parent="."]
+mesh = SubResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="Terrain"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Terrain/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.87429, 0 )
+shape = SubResource( 6 )
