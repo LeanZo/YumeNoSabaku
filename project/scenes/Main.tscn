@@ -67,6 +67,7 @@ light_specular = 0.3
 
 [node name="Particles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 388, 0 )
+visible = false
 amount = 2000
 lifetime = 60000.0
 explosiveness = 1.0

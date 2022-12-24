@@ -65,6 +65,12 @@ func _physics_process(delta):
 func _input(event):
 	if event is InputEventMouseMotion:
 		mouseDelta = event.relative
+		
+	if Input.is_action_just_pressed("mouse_click"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		
+	if Input.is_action_just_pressed("ui_cancel"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
