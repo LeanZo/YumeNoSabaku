@@ -29,16 +29,17 @@ func _physics_process(delta):
 	vel.z = 0
 	
 	var input = Vector2()
-  
-	# movement inputs
-	if Input.is_action_pressed("move_forward"):
-		input.y -= 1
-	if Input.is_action_pressed("move_backward"):
-		input.y += 1
-	if Input.is_action_pressed("move_left"):
-		input.x -= 1
-	if Input.is_action_pressed("move_right"):
-		input.x += 1
+
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		# movement inputs
+		if Input.is_action_pressed("move_forward"):
+			input.y -= 1
+		if Input.is_action_pressed("move_backward"):
+			input.y += 1
+		if Input.is_action_pressed("move_left"):
+			input.x -= 1
+		if Input.is_action_pressed("move_right"):
+			input.x += 1
 
 	input = input.normalized()
 	
@@ -71,9 +72,15 @@ func _input(event):
 		
 	if Input.is_action_just_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		
+	if event.is_action_pressed("toggle_fullscreen"):
+		OS.window_fullscreen = !OS.window_fullscreen
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+		return
+		
 	# rotate the camera along the x axis
 	camera.rotation_degrees.x -= mouseDelta.y * lookSensitivity * delta
 	

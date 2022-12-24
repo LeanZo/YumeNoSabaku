@@ -56,7 +56,7 @@ __meta__ = {
 }
 
 [node name="Player" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 181 )
+transform = Transform( 0.803753, 0, 0.594963, 0, 1, 0, -0.594963, 0, 0.803753, 161.284, 0, 193.06 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
@@ -67,7 +67,6 @@ light_specular = 0.3
 
 [node name="Particles" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 388, 0 )
-visible = false
 amount = 2000
 lifetime = 60000.0
 explosiveness = 1.0
