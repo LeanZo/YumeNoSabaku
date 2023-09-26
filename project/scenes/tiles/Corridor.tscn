@@ -1,0 +1,225 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://art/tex/Bricks075A_2K-JPG/Bricks075A_2K_NormalDX.jpg" type="Texture" id=1]
+[ext_resource path="res://art/tex/Bricks075A_2K-JPG/Bricks075A_2K_Displacement.jpg" type="Texture" id=2]
+[ext_resource path="res://art/tex/Bricks075A_2K-JPG/Bricks075A_2K_Color.jpg" type="Texture" id=3]
+[ext_resource path="res://art/tex/Bricks075A_2K-JPG/Bricks075A_2K_Roughness.jpg" type="Texture" id=4]
+[ext_resource path="res://art/tex/Rock020_2K-JPG/Rock020_2K_Roughness.jpg" type="Texture" id=5]
+[ext_resource path="res://art/tex/Rock020_2K-JPG/Rock020_2K_NormalDX.jpg" type="Texture" id=6]
+[ext_resource path="res://art/tex/Rock020_2K-JPG/Rock020_2K_Color.jpg" type="Texture" id=7]
+[ext_resource path="res://art/tex/Rock020_2K-JPG/Rock020_2K_Displacement.jpg" type="Texture" id=8]
+
+[sub_resource type="SpatialMaterial" id=11]
+flags_use_shadow_to_opacity = true
+params_diffuse_mode = 3
+params_specular_mode = 4
+params_blend_mode = 3
+
+[sub_resource type="Shader" id=10]
+code = "shader_type spatial;
+
+uniform sampler2D noise_tex;
+uniform float cut_factor;
+uniform float border;
+uniform float height;
+
+uniform float size_1;
+uniform sampler2D albedo_1;
+uniform sampler2D normalmap_1;
+uniform sampler2D roughness_1;
+uniform sampler2D displacement_1;
+
+uniform vec4 albedo_3 : hint_color;
+
+uniform float roughness : hint_range(0.0, 10.0, 0.1);
+
+void fragment() {
+	vec2 uv_1 = UV * size_1;
+	
+	float noise = texture(displacement_1,  uv_1).r;
+	noise = smoothstep(cut_factor, cut_factor + border, noise);
+	
+	vec3 stone = mix(texture(albedo_1, uv_1).rgb, albedo_3.rgb, 1);
+	
+	vec3 albedo = stone;
+	vec3 normalmap = texture(normalmap_1, uv_1).rgb;
+	vec3 roughnessvalue = texture(roughness_1, uv_1).rgb;
+	
+	ALBEDO = vec3(albedo);
+	NORMALMAP = normalmap;
+	ROUGHNESS = roughnessvalue.r;
+}
+
+void vertex() {
+	vec2 uv_1 = UV * size_1;
+	float noise = texture(displacement_1,  uv_1).r;
+	VERTEX.y += noise * height;
+}"
+
+[sub_resource type="OpenSimplexNoise" id=2]
+period = 27.2
+persistence = 0.633
+lacunarity = 2.88
+
+[sub_resource type="NoiseTexture" id=3]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource( 2 )
+
+[sub_resource type="ShaderMaterial" id=8]
+next_pass = SubResource( 11 )
+shader = SubResource( 10 )
+shader_param/cut_factor = 0.0
+shader_param/border = 0.0
+shader_param/height = 0.0
+shader_param/size_1 = 1.0
+shader_param/albedo_3 = Color( 0.00392157, 0.00392157, 0.00392157, 1 )
+shader_param/roughness = 1.7
+shader_param/noise_tex = SubResource( 3 )
+shader_param/albedo_1 = ExtResource( 7 )
+shader_param/normalmap_1 = ExtResource( 6 )
+shader_param/roughness_1 = ExtResource( 5 )
+shader_param/displacement_1 = ExtResource( 8 )
+
+[sub_resource type="PlaneMesh" id=9]
+material = SubResource( 8 )
+size = Vector2( 3, 3 )
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 3, 0.5, 1.5 )
+
+[sub_resource type="Shader" id=7]
+code = "shader_type spatial;
+
+uniform sampler2D noise_tex;
+uniform float cut_factor;
+uniform float border;
+uniform float height;
+
+uniform float size_1;
+uniform sampler2D albedo_1;
+uniform sampler2D normalmap_1;
+uniform sampler2D roughness_1;
+uniform sampler2D displacement_1;
+
+uniform sampler2D albedo_2;
+uniform sampler2D normalmap_2;
+uniform sampler2D roughness_2;
+
+uniform vec4 albedo_3 : hint_color;
+uniform vec4 albedo_4 : hint_color;
+
+uniform float roughness : hint_range(0.0, 10.0, 0.1);
+
+void fragment() {
+	vec2 uv_1 = UV * size_1;
+	vec2 uv_2 = UV * size_1;
+	
+	float noise = texture(displacement_1,  uv_1).r;
+	noise = smoothstep(cut_factor, cut_factor + border, noise);
+	
+	vec3 stone = mix(texture(albedo_1, uv_1).rgb, albedo_4.rgb, 1);
+	vec3 sand = mix(texture(albedo_2, uv_2).rgb, albedo_3.rgb, 1);
+	
+	vec3 albedo = mix(sand, stone, noise);
+	vec3 normalmap = mix(texture(normalmap_1, uv_1).rgb, texture(normalmap_2, uv_2).rgb, noise);
+	vec3 roughnessvalue = mix(texture(roughness_1, uv_1).rgb, texture(roughness_2, uv_2).rgb, noise);
+	
+	ALBEDO = vec3(albedo);
+	NORMALMAP = normalmap;
+	ROUGHNESS = roughnessvalue.r;
+	EMISSION = vec3(albedo);
+}
+
+void vertex() {
+	vec2 uv_1 = UV * size_1;
+	float noise = texture(displacement_1,  uv_1).r;
+	//noise = smoothstep(cut_factor, cut_factor + border, noise);
+	VERTEX.y += noise * height;
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 7 )
+shader_param/cut_factor = 0.052
+shader_param/border = 0.448
+shader_param/height = 0.034
+shader_param/size_1 = 5.0
+shader_param/albedo_3 = Color( 1, 0.392157, 0.027451, 1 )
+shader_param/albedo_4 = Color( 0.0352941, 0.0352941, 0.0352941, 1 )
+shader_param/roughness = 0.9
+shader_param/noise_tex = SubResource( 3 )
+shader_param/albedo_1 = ExtResource( 3 )
+shader_param/normalmap_1 = ExtResource( 1 )
+shader_param/roughness_1 = ExtResource( 4 )
+shader_param/displacement_1 = ExtResource( 2 )
+shader_param/albedo_2 = ExtResource( 3 )
+shader_param/normalmap_2 = ExtResource( 1 )
+shader_param/roughness_2 = ExtResource( 4 )
+
+[sub_resource type="PlaneMesh" id=5]
+material = SubResource( 4 )
+size = Vector2( 6, 3 )
+subdivide_width = 100
+subdivide_depth = 100
+
+[node name="Corridor" type="Spatial"]
+
+[node name="Terrain" type="Spatial" parent="."]
+
+[node name="Terrain1" type="MeshInstance" parent="Terrain"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0 )
+mesh = SubResource( 9 )
+skeleton = NodePath("../..")
+
+[node name="Terrain2" type="MeshInstance" parent="Terrain"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0 )
+mesh = SubResource( 9 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="Terrain"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Terrain/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
+shape = SubResource( 6 )
+
+[node name="Ceilling" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 3, 0 )
+
+[node name="Terrain1" type="MeshInstance" parent="Ceilling"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0 )
+mesh = SubResource( 9 )
+skeleton = NodePath("../..")
+
+[node name="Terrain2" type="MeshInstance" parent="Ceilling"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0 )
+mesh = SubResource( 9 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="Ceilling"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Ceilling/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
+shape = SubResource( 6 )
+
+[node name="Wall" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.5, -1.5 )
+mesh = SubResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="Wall"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Wall/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48, 2.38419e-07 )
+shape = SubResource( 6 )
+
+[node name="Wall2" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.5, 1.5 )
+mesh = SubResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="Wall2"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Wall2/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48, 0 )
+shape = SubResource( 6 )

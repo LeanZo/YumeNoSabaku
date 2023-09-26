@@ -3,16 +3,17 @@
 importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.s3tc.stex"
+path.etc2="res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.etc2.stex"
 path.etc="res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.etc.stex"
 metadata={
-"imported_formats": [ "s3tc", "etc" ],
+"imported_formats": [ "s3tc", "etc2", "etc" ],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/tex/Ground033_2K-JPG/Ground033_2K_Color.jpg"
-dest_files=[ "res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.s3tc.stex", "res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.etc.stex" ]
+dest_files=[ "res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.s3tc.stex", "res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.etc2.stex", "res://.import/Ground033_2K_Color.jpg-bd52d1128c9738e348a0d899a4ecc639.etc.stex" ]
 
 [params]
 

@@ -3,16 +3,17 @@
 importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.s3tc.stex"
+path.etc2="res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.etc2.stex"
 path.etc="res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.etc.stex"
 metadata={
-"imported_formats": [ "s3tc", "etc" ],
+"imported_formats": [ "s3tc", "etc2", "etc" ],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/tex/Ground031_2K-JPG/Ground031_2K_Roughness.jpg"
-dest_files=[ "res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.s3tc.stex", "res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.etc.stex" ]
+dest_files=[ "res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.s3tc.stex", "res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.etc2.stex", "res://.import/Ground031_2K_Roughness.jpg-2d14fb2e776e972952c058ca6d23bf1c.etc.stex" ]
 
 [params]
 
